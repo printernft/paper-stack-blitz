@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Play the Paper Stack Daily Challenge from Printer World, built for MagicBlock's Solana Blitz v10.">
+  <title>Paper Stack | Printer World for MagicBlock Blitz</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="brands" aria-label="Printer World and MagicBlock">
+        <a href="https://printer.world/" class="brand"><span class="brand-mark" aria-hidden="true"></span>Printer World</a>
+        <a href="https://www.magicblock.xyz/" class="magicblock-brand"><img src="/assets/magicblock.png" width="680" height="123" alt="MagicBlock"></a>
+      </div>
+      <p class="edition">Solana Blitz v10 entry</p>
+    </div>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="title">
+      <div class="challenge-meta">
+        <p class="challenge-label">Daily challenge</p>
+        <a id="draw-jump" href="#draw-proof" hidden></a>
+      </div>
+      <h1 id="title">Paper Stack</h1>
+      <p>Fill today's print orders. Send a friend your score to beat.</p>
+      <div class="target" id="target-row" hidden>
+        <p id="target"></p>
+        <a id="target-audit" href="#run-audit" hidden>Check their run</a>
+      </div>
+    </section>
+    <div class="layout">
+      <section class="game-card" id="paper-game" aria-label="Paper Stack game" tabindex="-1">
+        <div class="game-bar">
+          <div><span>Sheets stacked</span> <strong id="score">0</strong></div>
+          <span id="game-status" role="status">Ready to play</span>
+        </div>
+        <section class="order-ticket" id="order-ticket" aria-labelledby="order-heading" hidden>
+          <div class="order-header">
+            <h2 id="order-heading">Today's print orders</h2>
+            <span id="order-progress"></span>
+          </div>
+          <ol id="order-list" class="order-list" aria-label="Print order sequence"></ol>
+          <div class="order-rule"><p id="order-detail"></p><span id="order-timer" hidden></span></div>
+        </section>
+        <div class="controls">
+          <button id="play" disabled>Play challenge</button>
+          <button id="drop" hidden>Drop sheet</button>
+          <span id="hint">Line up the sheet. Tap the tower to drop<span class="key-hint"> or press <kbd>Space</kbd></span></span>
+          <a id="current-challenge" href="/" hidden>Open today's challenge</a>
+        </div>
+        <form id="save" class="save" hidden>
+          <label for="player">Name on the leaderboard</label>
+          <div><input id="player" maxlength="20" required autocomplete="nickname" placeholder="Your name"><button>Save score</button></div>
+        </form>
+        <div class="scorecard" id="scorecard" hidden>
+          <div><span>Scorecard</span><strong id="scorecard-result"></strong><a id="saved-audit" href="#run-audit" hidden>Check your run</a></div>
+          <button id="share-score" type="button">Copy scorecard link</button>
+        </div>
+        <p id="scorecard-status" class="share-feedback" role="status" hidden></p>
+        <input id="scorecard-url" class="share-fallback" type="url" aria-label="Scorecard link" readonly hidden>
+        <p id="error" class="notice" role="alert" hidden></p>
+        <canvas id="tower" width="760" height="400" aria-label="Paper sheets sliding over a tower"></canvas>
+      </section>
+      <div class="side">
+        <section class="proof" id="draw-proof" aria-labelledby="proof-heading" data-state="practice">
+          <h2 id="proof-heading" tabindex="-1">MagicBlock VRF</h2>
+          <p>The draw sets the speed, cut tolerance, and time limit for today's orders.</p>
+          <p class="proof-status" id="proof-title" role="status">Loading challenge</p>
+          <p class="proof-copy" id="proof-copy">Checking today's pattern.</p>
+          <a id="proof-link" target="_blank" rel="noopener noreferrer" hidden>View Solana transaction</a>
+          <details id="proof-details" hidden>
+            <summary>Pattern details</summary>
+            <dl>
+              <div><dt>Seed</dt><dd id="proof-seed"></dd></div>
+              <div><dt>Program</dt><dd id="proof-program"></dd></div>
+              <div><dt>Account</dt><dd id="proof-account"></dd></div>
+            </dl>
+          </details>
+          <details id="run-audit" hidden>
+            <summary id="audit-name">Check this run</summary>
+            <p id="audit-result"></p>
+            <details id="audit-timings">
+              <summary>Recorded drop timings</summary>
+              <p id="audit-drop-log" aria-label="Milliseconds after each sheet appeared"></p>
+            </details>
+          </details>
+          <a class="proof-return" href="#paper-game">Back to game</a>
+        </section>
+        <section class="leaderboard" aria-labelledby="leaderboard-heading">
+          <div class="board-top"><h2 id="leaderboard-heading">Leaderboard</h2><time id="challenge-day"></time></div>
+          <ol id="leaders"></ol>
+          <p id="empty-board">Set the first score.</p>
+          <button id="share" class="share" disabled>Copy challenge link</button>
+          <p id="share-status" role="status" hidden></p>
+          <input id="share-url" type="url" aria-label="Challenge link" readonly hidden>
+        </section>
+        <figure class="world">
+          <img src="/assets/stack.jpg" width="896" height="512" alt="Paper Stack pedestals inside Printer World">
+          <figcaption><a href="https://printer.world/">See where Paper Stack started</a></figcaption>
+        </figure>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
