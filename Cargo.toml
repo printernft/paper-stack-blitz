@@ -2,6 +2,10 @@
 members = ["programs/stack-seed"]
 resolver = "2"
 
+[patch.crates-io]
+# Keep the Anchor runtime, derives and IDL generator on the same release.
+anchor-lang = { git = "https://github.com/otter-sec/anchor", rev = "1314a6b83b16e6a31947b372d57988fd0e81559c" }
+
 [profile.release]
 overflow-checks = true
 lto = "fat"
