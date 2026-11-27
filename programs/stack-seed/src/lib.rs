@@ -62,7 +62,7 @@ pub mod stack_seed {
 pub struct RequestSeed<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
-    #[account(init, payer = payer, space = 8 + DailySeed::INIT_SPACE, seeds = [b"day", &day.to_le_bytes()], bump)]
+    #[account(init, payer = payer, space = 8 + DailySeed::INIT_SPACE, seeds = [b"day".as_ref(), day.to_le_bytes().as_ref()], bump)]
     pub daily: Account<'info, DailySeed>,
     /// CHECK: only the canonical base-layer queue may serve this request.
     #[account(mut, address = DEFAULT_QUEUE)]
@@ -74,7 +74,7 @@ pub struct RequestSeed<'info> {
 #[derive(Accounts)]
 #[instruction(randomness: [u8; 32], day: u32)]
 pub struct ReceiveSeed<'info> {
-    #[account(mut, seeds = [b"day", &day.to_le_bytes()], bump)]
+    #[account(mut, seeds = [b"day".as_ref(), day.to_le_bytes().as_ref()], bump)]
     pub daily: Account<'info, DailySeed>,
 }
 
