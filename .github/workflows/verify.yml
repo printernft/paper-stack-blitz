@@ -1,0 +1,70 @@
+name: Paper Stack checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      compile_program:
+        description: Compile the Anchor seed program
+        type: boolean
+        default: true
+      request_devnet_proof:
+        description: Deploy on devnet and request the VRF draw after the test payer is funded
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  game:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - run: npm test
+      - run: node scripts/export-local.mjs
+
+  program:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && (inputs.compile_program || inputs.request_devnet_proof)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - name: Install pinned Solana and Anchor tools
+        shell: bash
+        run: |
+          rustup toolchain install 1.89.0 --profile minimal
+          rustup default 1.89.0
+          curl --fail --silent --show-error --location --retry 3 https://release.anza.xyz/v3.1.9/install -o "$RUNNER_TEMP/install-agave.sh"
+          sh "$RUNNER_TEMP/install-agave.sh"
+          printf '%s\n' "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+          cargo install --git https://github.com/otter-sec/anchor --tag v1.0.2 anchor-cli --locked
+      - name: Compile program and generate IDL
+        run: node scripts/devnet-build.mjs
+      - name: Deploy with faucet funds and verify the draw
+        if: inputs.request_devnet_proof
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund @solana/web3.js@1.98.4
+          node scripts/devnet-ci.mjs
+      - name: Save public proof receipt
+        if: inputs.request_devnet_proof
+        uses: actions/upload-artifact@v7
+        with:
+          name: paper-stack-devnet-proof
+          path: devnet-proof.json
+          if-no-files-found: error
+          retention-days: 7
